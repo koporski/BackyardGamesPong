@@ -36,19 +36,19 @@ canvas.height = H;
 // zmienne przechowujace punktacje
 var leftScore = 0;
 var rightScore = 0;
-var pallet_height = H/6; //wysokość paletki
-var pallet_width = 10; //szerrokość paletki
-//pozycje paletek
-var player1_position_x = 20;
-var player2_position_x = W-pallet_width-20;
-var player1_position_y = H/2 - pallet_height/2;
-var player2_position_y = H/2 - pallet_height/2;
 
-var pallet_hit_sound = new Howl({urls: ['http://vorb.pl/GameProjects/Pong/includes/sounds/pallet_hit.wav']});
+// zmienilem pallet na paddle - M
+var paddle_height = H/6; //wysokość paletki
+var paddle_width = 10; //szerrokość paletki
+
+var paddle_hit_sound = new Howl({urls: ['http://vorb.pl/GameProjects/Pong/includes/sounds/paddle_hit.wav']});
 var wall_hit_sound = new Howl({urls: ['http://vorb.pl/GameProjects/Pong/includes/sounds/wall_hit.wav']});
 var ctx;
 
-var ball = new Ball(W/2, H/2, pallet_height/8, 8); 
+//wywolania obiektow
+var ball = new Ball(W/2, H/2, paddle_height/8, 8);
+var leftPaddle = new Paddle(20, H/2 - paddle_height/2, paddle_width, paddle_height);
+var rightPaddle = new Paddle(W-paddle_width-20, H/2 - paddle_height/2, paddle_width, paddle_height);
 
 function init() {
     ctx = $('canvas')[0].getContext("2d");
@@ -65,22 +65,18 @@ function draw() {
     ctx.strokeStyle = "white";
     ctx.stroke();
 
-    ball.draw();
-
-    ctx.fillStyle = "rgb(230,230,230)";
-    ctx.fillRect(player1_position_x,player1_position_y,pallet_width,pallet_height);
-
-    ctx.fillStyle = 'rgb(230,230,230)';
-    ctx.fillRect(player2_position_x, player2_position_y,pallet_width,pallet_height);
-
+    //ball.draw();
     drawScore();
+    leftPaddle.draw();
+    rightPaddle.draw();
 
-    if (wKey && player1_position_y > 0) player1_position_y -= 10;
-    if (sKey && player1_position_y < H-pallet_height ) player1_position_y += 10;
+
+    if (wKey && leftPaddle.position_y > 0)leftPaddle.position_y -= 10;
+    if (sKey && leftPaddle.position_y < H-paddle_height ) leftPaddle.position_y += 10;
 
 
-    if (upKey && player2_position_y > 0) player2_position_y -= 10;
-    if (downKey && player2_position_y < H-pallet_height) player2_position_y += 10;
+    if (upKey && rightPaddle.position_y > 0) rightPaddle.position_y -= 10;
+    if (downKey && rightPaddle.position_y < H-paddle_height) rightPaddle.position_y += 10;
 
     //ruch piłki
     ball.move();
@@ -109,82 +105,82 @@ function draw() {
     }
 
     //odbicia od zewnętrzych krawędzi paletek
-    if(ball.position_y >= player1_position_y && ball.position_y  <= player1_position_y + pallet_height && ball.position_x > player1_position_x + pallet_width) {
-        if(Math.abs(ball.position_x -(player1_position_x + pallet_width)) <= ball.radius) {
-            ball.position_x = player1_position_x + pallet_width + ball.radius;
+    if(ball.position_y >= leftPaddle.position_y && ball.position_y  <= leftPaddle.position_y + paddle_height && ball.position_x > leftPaddle.position_x + paddle_width) {
+        if(Math.abs(ball.position_x -(leftPaddle.position_x + paddle_width)) <= ball.radius) {
+            ball.position_x = leftPaddle.position_x + paddle_width + ball.radius;
             ball.speed_x = -ball.speed_x;
-            pallet_hit_sound.play();
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_y >= player2_position_y && ball.position_y  <= player2_position_y + pallet_height && ball.position_x < player2_position_x) {
-        if(Math.abs((player2_position_x - ball.position_x)) <= ball.radius) {
+    if(ball.position_y >= rightPaddle.position_y && ball.position_y  <= rightPaddle.position_y + paddle_height && ball.position_x < rightPaddle.position_x) {
+        if(Math.abs((rightPaddle.position_x - ball.position_x)) <= ball.radius) {
             ball.speed_x = -ball.speed_x;
-            ball.position_x = player2_position_x - ball.radius;
-            pallet_hit_sound.play();
+            ball.position_x = rightPaddle.position_x - ball.radius;
+            paddle_hit_sound.play();
         }
     }
     //odbicie od dolnych krawędzi paletek
-    if(ball.position_x - ball.radius <= player1_position_x + pallet_width && ball.position_x >= player1_position_x && ball.position_y > player1_position_y + pallet_height) {
-        if(Math.abs(ball.position_y - (player1_position_y + pallet_height)) <= ball.radius) {
+    if(ball.position_x - ball.radius <= leftPaddle.position_x + paddle_width && ball.position_x >= leftPaddle.position_x && ball.position_y > leftPaddle.position_y + paddle_height) {
+        if(Math.abs(ball.position_y - (leftPaddle.position_y + paddle_height)) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
             ball.speed_x = -ball.speed_x;
-            ball.position_y = player1_position_y + pallet_height + ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = leftPaddle.position_y + paddle_height + ball.radius;
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_x + ball.radius >= player2_position_x && ball.position_x <= player2_position_x + pallet_width && ball.position_y > player2_position_y + pallet_height ) {
-        if(Math.abs(ball.position_y - (player2_position_y + pallet_height)) <= ball.radius) {
+    if(ball.position_x + ball.radius >= rightPaddle.position_x && ball.position_x <= rightPaddle.position_x + paddle_width && ball.position_y > rightPaddle.position_y + paddle_height ) {
+        if(Math.abs(ball.position_y - (rightPaddle.position_y + paddle_height)) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
             ball.speed_x = -ball.speed_x;
-            ball.position_y = player2_position_y + pallet_height + ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = rightPaddle.position_y + paddle_height + ball.radius;
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_x - ball.radius <= player1_position_x + pallet_width && ball.position_x < player1_position_x && ball.position_y > player1_position_y + pallet_height) {
-        if(Math.abs(ball.position_y - (player1_position_y + pallet_height)) <= ball.radius) {
+    if(ball.position_x - ball.radius <= leftPaddle.position_x + paddle_width && ball.position_x < leftPaddle.position_x && ball.position_y > leftPaddle.position_y + paddle_height) {
+        if(Math.abs(ball.position_y - (leftPaddle.position_y + paddle_height)) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
-            ball.position_y = player1_position_y + pallet_height + ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = leftPaddle.position_y + paddle_height + ball.radius;
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_x + ball.radius >= player2_position_x + pallet_width && ball.position_x > player2_position_x && ball.position_y > player2_position_y + pallet_height ) {
-        if(Math.abs(ball.position_y - (player2_position_y + pallet_height)) <= ball.radius) {
+    if(ball.position_x + ball.radius >= rightPaddle.position_x + paddle_width && ball.position_x > rightPaddle.position_x && ball.position_y > rightPaddle.position_y + paddle_height ) {
+        if(Math.abs(ball.position_y - (rightPaddle.position_y + paddle_height)) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
-            ball.position_y = player2_position_y + pallet_height + ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = rightPaddle.position_y + paddle_height + ball.radius;
+            paddle_hit_sound.play();
         }
     }
 
 
     //odbicie od górnych krawędzi paletek
-    if(ball.position_x - ball.radius <= player1_position_x + pallet_width && ball.position_x >= player1_position_x  && ball.position_y < player1_position_y) {
-        if(Math.abs(player1_position_y - ball.position_y) <= ball.radius) {
+    if(ball.position_x - ball.radius <= leftPaddle.position_x + paddle_width && ball.position_x >= leftPaddle.position_x  && ball.position_y < leftPaddle.position_y) {
+        if(Math.abs(leftPaddle.position_y - ball.position_y) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
             ball.speed_x = -ball.speed_x;
-            ball.position_y = player1_position_y - ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = leftPaddle.position_y - ball.radius;
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_x + ball.radius >= player2_position_x && ball.position_x <= player2_position_x + pallet_width && ball.position_y < player2_position_y) {
-        if(Math.abs(player2_position_y - ball.position_y) <= ball.radius) {
+    if(ball.position_x + ball.radius >= rightPaddle.position_x && ball.position_x <= rightPaddle.position_x + paddle_width && ball.position_y < rightPaddle.position_y) {
+        if(Math.abs(rightPaddle.position_y - ball.position_y) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
             ball.speed_x = -ball.speed_x;
-            ball.position_y = player2_position_y - ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = rightPaddle.position_y - ball.radius;
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_x - ball.radius <= player1_position_x + pallet_width && ball.position_x < player1_position_x  && ball.position_y < player1_position_y) {
-        if(Math.abs(player1_position_y - ball.position_y) <= ball.radius) {
+    if(ball.position_x - ball.radius <= leftPaddle.position_x + paddle_width && ball.position_x < leftPaddle.position_x  && ball.position_y < leftPaddle.position_y) {
+        if(Math.abs(leftPaddle.position_y - ball.position_y) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
-            ball.position_y = player1_position_y - ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = leftPaddle.position_y - ball.radius;
+            paddle_hit_sound.play();
         }
     }
-    if(ball.position_x + ball.radius >= player2_position_x + pallet_width && ball.position_x > player2_position_x && ball.position_y < player2_position_y) {
-        if(Math.abs(player2_position_y - ball.position_y) <= ball.radius) {
+    if(ball.position_x + ball.radius >= rightPaddle.position_x + paddle_width && ball.position_x > rightPaddle.position_x && ball.position_y < rightPaddle.position_y) {
+        if(Math.abs(rightPaddle.position_y - ball.position_y) <= ball.radius) {
             ball.speed_y = -ball.speed_y;
-            ball.position_y = player2_position_y - ball.radius;
-            pallet_hit_sound.play();
+            ball.position_y = rightPaddle.position_y - ball.radius;
+            paddle_hit_sound.play();
         }
     }
 
@@ -212,14 +208,29 @@ function chlosta() {
     }
   }
 
+  function Paddle(initial_position_x, initial_position_y, paddle_width, paddle_height) {
+    this.position_x = initial_position_x;
+    this.position_y = initial_position_y;
+    this.width = paddle_width;
+    this.height = paddle_height;
+
+    this.draw = function() {
+        ctx.beginPath();
+        ctx.fillStyle = "rgb(230,230,230)";
+        ctx.fillRect(this.position_x,this.position_y, this.width ,this.height);
+
+    }
+  }
+
 function Ball(initial_position_x, initial_position_y, radius, initial_speed) {
     this.position_x = initial_position_x;
     this.position_y = initial_position_y;
     this.radius = radius;
-    var kat = Math.random()*180/Math.PI;
-    this.speed_x = initial_speed * Math.cos(kat);
-    this.speed_y = initial_speed * Math.sin(kat);
-    
+    // zmienilem kat na angle - M
+    var angle = Math.random()*180/Math.PI;
+    this.speed_x = initial_speed * Math.cos(angle);
+    this.speed_y = initial_speed * Math.sin(angle);
+
     this.draw = function() {
         ctx.beginPath();
         ctx.fillStyle = 'rgb(256,256,256)';
@@ -235,10 +246,10 @@ function Ball(initial_position_x, initial_position_y, radius, initial_speed) {
     this.reset = function() {
         this.position_x = initial_position_x;
         this.position_y = initial_position_y;
-        kat = Math.random()*180/Math.PI;
-        this.speed_x = initial_speed * Math.cos(kat);
-        this.speed_y = initial_speed * Math.sin(kat);
-    }    
+        angle = Math.random()*180/Math.PI;
+        this.speed_x = initial_speed * Math.cos(angle);
+        this.speed_y = initial_speed * Math.sin(angle);
+    }
 
 }
 $('.start_button').click(function(){
@@ -246,5 +257,4 @@ $('.start_button').click(function(){
     $('img.logo').fadeOut();
     init();
 });
-
 

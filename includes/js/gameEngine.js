@@ -65,7 +65,7 @@ function draw() {
     ctx.strokeStyle = "white";
     ctx.stroke();
 
-    //ball.draw();
+    ball.draw();
     drawScore();
     leftPaddle.draw();
     rightPaddle.draw();

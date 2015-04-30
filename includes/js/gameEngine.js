@@ -226,26 +226,19 @@ function Ball(initial_position_x, initial_position_y, radius, initial_speed) {
     this.position_x = initial_position_x - radius;
     this.position_y = initial_position_y - radius;
     this.radius = radius;
-<<<<<<< HEAD
-    var kat = Math.random()*180/Math.PI;
-    this.speed_x = initial_speed * Math.cos(kat);
-    this.speed_y = initial_speed * Math.sin(kat);
     
     var img = new Image();
     img.src = "includes/img/volleyball.png";
 
-||||||| merged common ancestors
     var kat = Math.random()*180/Math.PI;
     this.speed_x = initial_speed * Math.cos(kat);
     this.speed_y = initial_speed * Math.sin(kat);
     
-=======
     // zmienilem kat na angle - M
     var angle = Math.random()*180/Math.PI;
     this.speed_x = initial_speed * Math.cos(angle);
     this.speed_y = initial_speed * Math.sin(angle);
 
->>>>>>> 02fc210927e3a9c6e06a4295526ebba3d7f79052
     this.draw = function() {
         ctx.drawImage(img, this.position_x - radius, this.position_y - radius, 2*radius, 2*radius);
     }
@@ -256,28 +249,12 @@ function Ball(initial_position_x, initial_position_y, radius, initial_speed) {
     }
 
     this.reset = function() {
-<<<<<<< HEAD
         this.position_x = initial_position_x - radius;
         this.position_y = initial_position_y - radius;
-        kat = Math.random()*180/Math.PI;
-        this.speed_x = initial_speed * Math.cos(kat);
-        this.speed_y = initial_speed * Math.sin(kat);
-    }    
-||||||| merged common ancestors
-        this.position_x = initial_position_x;
-        this.position_y = initial_position_y;
-        kat = Math.random()*180/Math.PI;
-        this.speed_x = initial_speed * Math.cos(kat);
-        this.speed_y = initial_speed * Math.sin(kat);
-    }    
-=======
-        this.position_x = initial_position_x;
-        this.position_y = initial_position_y;
         angle = Math.random()*180/Math.PI;
         this.speed_x = initial_speed * Math.cos(angle);
         this.speed_y = initial_speed * Math.sin(angle);
     }
->>>>>>> 02fc210927e3a9c6e06a4295526ebba3d7f79052
 
 }
 $('.start_button').click(function(){

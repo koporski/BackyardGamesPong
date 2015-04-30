@@ -213,18 +213,18 @@ function chlosta() {
   }
 
 function Ball(initial_position_x, initial_position_y, radius, initial_speed) {
-    this.position_x = initial_position_x;
-    this.position_y = initial_position_y;
+    this.position_x = initial_position_x - radius;
+    this.position_y = initial_position_y - radius;
     this.radius = radius;
     var kat = Math.random()*180/Math.PI;
     this.speed_x = initial_speed * Math.cos(kat);
     this.speed_y = initial_speed * Math.sin(kat);
     
+    var img = new Image();
+    img.src = "includes/img/volleyball.png";
+
     this.draw = function() {
-        ctx.beginPath();
-        ctx.fillStyle = 'rgb(256,256,256)';
-        ctx.arc(this.position_x, this.position_y,this.radius, 0, Math.PI*2, false);
-        ctx.fill();
+        ctx.drawImage(img, this.position_x - radius, this.position_y - radius, 2*radius, 2*radius);
     }
 
     this.move = function() {
@@ -233,8 +233,8 @@ function Ball(initial_position_x, initial_position_y, radius, initial_speed) {
     }
 
     this.reset = function() {
-        this.position_x = initial_position_x;
-        this.position_y = initial_position_y;
+        this.position_x = initial_position_x - radius;
+        this.position_y = initial_position_y - radius;
         kat = Math.random()*180/Math.PI;
         this.speed_x = initial_speed * Math.cos(kat);
         this.speed_y = initial_speed * Math.sin(kat);
